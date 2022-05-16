@@ -29,7 +29,7 @@ class Fun(Cog):
         await ctx.send(f"\U0001FA99 It is {choice(('Heads', 'Tails',))}")
 
     # command for generating a random fact
-    @command(name="fact", description="Display a random fact about animals", aliases=["Fact"])
+    @command(name="fact", description="Display a random fact ", aliases=["Fact"])
     @cooldown(1, 5, BucketType.user)
     async def fact(self, ctx):
         URL = ["https://some-random-api.ml/facts/dog",
@@ -42,9 +42,11 @@ class Fun(Cog):
         async with request("GET", choice(URL), headers={}) as response:
             if response.status == 200:
                 data = await response.json()
+                if data["fact"] is not None:
+                    fact = data["fact"]
 
-                embed = Embed(title="\U0001F914 Interesting Fact about animals!",
-                              description=data["fact"],
+                embed = Embed(title="\U0001F914 Here is an Interesting Fact !",
+                              description=fact,
                               colour=0x5953d7)
 
                 await ctx.send(embed=embed)

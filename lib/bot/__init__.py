@@ -1,3 +1,4 @@
+import os
 from asyncio import sleep
 from discord import Intents
 from glob import glob
@@ -7,15 +8,18 @@ from random import choice
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.errors import HTTPException, Forbidden
 from discord.ext.commands import Bot as BotBase
-from discord.ext.commands import (CommandNotFound, BadArgument, MissingRequiredArgument, CommandOnCooldown, when_mentioned_or)
+from discord.ext.commands import (CommandNotFound, BadArgument, MissingRequiredArgument, CommandOnCooldown,
+                                  when_mentioned_or)
 
 PREFIX = "!"
 OWNER_IDS = [727031229085384724]
 COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
 IGNORE_EXCEPTIONS = (CommandNotFound, BadArgument)
 
+
 def get_prefix(bot, message):
     return when_mentioned_or(PREFIX)(bot, message)
+
 
 class Ready(object):
     def __init__(self):
@@ -32,6 +36,7 @@ class Ready(object):
 
 class Bot(BotBase):
     def __init__(self):
+        self.TOKEN = os.environ.get('token')
         self.PREFIX = PREFIX
         self.ready = False
         self.cogs_ready = Ready()
@@ -56,8 +61,8 @@ class Bot(BotBase):
         print("Running Setup")
         self.setup()
 
-        with open("./lib/bot/token.0", "r", encoding="utf-8") as tf:
-            self.TOKEN = tf.read()
+        # with open("./lib/bot/token.0", "r", encoding="utf-8") as tf:
+        #     self.TOKEN = tf.read()
 
         print("Starting Bot...")
         super().run(self.TOKEN, reconnect=True)
@@ -66,12 +71,13 @@ class Bot(BotBase):
         print("Everything Bot is Online")
 
     async def on_disconnect(self):
-        print("Everything Bot is Disconnected")
+        print("Everything Bot is Offline")
 
     async def on_error(self, err, *args, **kwargs):
         if err == "on_command_error":
-            await args[0].send("\U0001F635 Something went wrong.\nPlease use the **!help** command to display a list of all commands "
-                               "available.")
+            await args[0].send(
+                "\U0001F635 Something went wrong.\nPlease use the **!help** command to display a list of all commands "
+                "available.")
 
         raise
 
@@ -101,6 +107,7 @@ class Bot(BotBase):
 
     async def on_ready(self):
         if not self.ready:
+            print("Bot is ready")
             self.guild = self.get_guild(726645670945095721)
             self.stdout = self.get_channel(975289746202980362)
 
@@ -108,10 +115,11 @@ class Bot(BotBase):
                 await sleep(0.5)
 
             self.ready = True
-            print("Bot is ready")
+
 
             if self.stdout is not None:
-                await self.stdout.send("**"+choice(('\U0001F911','\U0001F92A','\U0001F929'))+"     Everything Bot is online**")
+                await self.stdout.send(
+                    "**" + choice(('\U0001F911', '\U0001F92A', '\U0001F929')) + "     Everything Bot is online**")
 
         else:
             print("Bot Reconnecting...")

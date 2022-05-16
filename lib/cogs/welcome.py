@@ -1,7 +1,5 @@
 import discord
 from discord.ext.commands import Cog
-from discord.ext.commands import command
-from discord.utils import get
 
 
 class Welcome(Cog):
@@ -32,7 +30,7 @@ class Welcome(Cog):
                     member = discord.utils.find(lambda m: m.id == payload.user_id, payload.member.guild.members)
                     if member is not None:
                         await member.add_roles(role)
-                        print("User was assigned the role of Member")
+                        print(f"{member.nick} was assigned the role of Member")
                     else:
                         print("Member not Found")
                 else:
@@ -51,14 +49,13 @@ class Welcome(Cog):
         if msg_id == 975066009293713438:
             if payload.emoji.name == 'radiant':
                 role = discord.utils.get(guild.roles, name='member')
-
-            if role is not None:
-                member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
-                if member is not None:
-                    await member.remove_roles(role)
-                    print("Member was removed from the users roles")
-                else:
-                    print("Member not Found")
+                if role is not None:
+                    member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
+                    if member is not None:
+                        await member.remove_roles(role)
+                        print(f"{member.nick} was removed from the member role")
+                    else:
+                        print("Member not Found")
             else:
                 print("Role not Found")
 
