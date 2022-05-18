@@ -14,8 +14,9 @@ class Info(Cog):
     @command(name="userinfo", aliases=["ui"], description="Display info on a user")
     async def user_info(self, ctx, *, name: Optional[str]):
         if name is not None:
-            target = discord.utils.get(ctx.guild.members, name=name) or discord.utils.get(ctx.guild.members, nick=name)\
-                     or discord.utils.get(ctx.guild.members, id=name)
+            print(name)
+            target = discord.utils.get(ctx.guild.members, name=name) or discord.utils.get(ctx.guild.members, nick=name) or discord.utils.get(ctx.guild.members, id=int(name)) or discord.utils.get(ctx.guild.members, mention=name)
+            print(target.name)
             if target is None:
                 await ctx.send("No user with that name found")
         else:

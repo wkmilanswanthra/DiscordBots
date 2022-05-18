@@ -6,6 +6,7 @@ from discord import Intents
 from glob import glob
 from discord import Embed
 from random import choice
+from webserver import keep_alive
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.errors import HTTPException, Forbidden
@@ -68,6 +69,7 @@ class Bot(BotBase):
         # with open("./lib/bot/token.0", "r", encoding="utf-8") as tf:
         #     self.TOKEN = tf.read()
 
+        keep_alive()
         self.TOKEN = os.environ.get('token')
 
         print("Starting Bot...")
