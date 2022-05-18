@@ -24,7 +24,7 @@ class HelpMenu(ListPageSource):
     def __init__(self, ctx, data):
         self.ctx = ctx
 
-        super().__init__(data, per_page=3)
+        super().__init__(data, per_page=6)
 
     async def write_page(self, menu, fields=[]):
         offset = (menu.current_page * self.per_page) + 1
@@ -59,10 +59,10 @@ class Help(Cog):
         embed = Embed(title=f"Help with ` {command} `",
                       description=syntax(command),
                       colour=ctx.author.colour)
-        embed.add_field(name="Command Description", value=command.help)
-        await ctx.send(embed=embed)
+        embed.add_field(name="Command Description", value=command.description)
+        await ctx.reply(embed=embed)
 
-    @command(name="help", description="Support with commands")
+    @command(name="help", description="Support with commands", aliases=["h"])
     async def show_help(self, ctx, cmd: Optional[str]):
         """Shows this message."""
         if cmd is None:

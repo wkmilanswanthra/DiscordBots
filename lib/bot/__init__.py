@@ -1,5 +1,7 @@
 import os
 from asyncio import sleep
+
+import discord
 from discord import Intents
 from glob import glob
 from discord import Embed
@@ -10,6 +12,8 @@ from discord.errors import HTTPException, Forbidden
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import (CommandNotFound, BadArgument, MissingRequiredArgument, CommandOnCooldown,
                                   when_mentioned_or)
+
+
 
 PREFIX = "!"
 OWNER_IDS = [727031229085384724]
@@ -36,8 +40,6 @@ class Ready(object):
 
 class Bot(BotBase):
     def __init__(self):
-        self.TOKEN = os.environ.get('token')
-        self.PREFIX = PREFIX
         self.ready = False
         self.cogs_ready = Ready()
         self.guild = None
@@ -46,6 +48,8 @@ class Bot(BotBase):
             command_prefix=get_prefix,
             owner_ids=OWNER_IDS,
             intents=Intents.all(),
+            status=None,
+            activity=discord.Activity(type=discord.ActivityType.watching, name="a movie")
         )
 
     def setup(self):
@@ -64,6 +68,8 @@ class Bot(BotBase):
         # with open("./lib/bot/token.0", "r", encoding="utf-8") as tf:
         #     self.TOKEN = tf.read()
 
+        self.TOKEN = os.environ.get('token')
+
         print("Starting Bot...")
         super().run(self.TOKEN, reconnect=True)
 
@@ -75,9 +81,10 @@ class Bot(BotBase):
 
     async def on_error(self, err, *args, **kwargs):
         if err == "on_command_error":
-            await args[0].send(
-                "\U0001F635 Something went wrong.\nPlease use the **!help** command to display a list of all commands "
-                "available.")
+            embed = discord.Embed(title="Error",
+                                  description="\U0001F635 Something went wrong.\nPlease use the **!help** command to display a list of all commands ",
+                                  color=discord.Color.red())
+            await args[0].send(embed=embed)
 
         raise
 
@@ -86,7 +93,9 @@ class Bot(BotBase):
             pass
 
         elif isinstance(exc, MissingRequiredArgument):
-            await ctx.send("\U0001F635 One or more required arguments are missing.")
+            embed = discord.Embed(title="", description="😬  One or more required arguments are missing.",
+                                  color=discord.Color.red())
+            await ctx.send(embed=embed)
 
         elif isinstance(exc, CommandOnCooldown):
 
@@ -107,7 +116,7 @@ class Bot(BotBase):
 
     async def on_ready(self):
         if not self.ready:
-            print("Bot is ready")
+
             self.guild = self.get_guild(726645670945095721)
             self.stdout = self.get_channel(975289746202980362)
 
@@ -116,6 +125,7 @@ class Bot(BotBase):
 
             self.ready = True
 
+            print("Bot is ready")
 
             if self.stdout is not None:
                 await self.stdout.send(

@@ -1,7 +1,7 @@
 from random import choice
 
 from aiohttp import request
-from discord import Embed
+from discord import Embed, client
 from discord.ext.commands import Cog, BucketType
 from discord.ext.commands import command, cooldown
 
@@ -16,6 +16,11 @@ class Fun(Cog):
         await ctx.send(
             f"{choice(('Hello', 'Hi', 'Hola'))} {ctx.author.mention} !, {choice(('Looking sharp today', 'Welcome to the server', 'Lets get gaming'))} . " + "\U0001F64B")
 
+    # command for Ping
+    @command(name="ping", aliases=["Ping"], description="Ping the bot")
+    async def ping(self, ctx):
+        await ctx.reply(f"\U0001F3D3 **Pong!** latency : {round(self.bot.latency*1000)}")
+
     # command for rolling a dice
     @command(name="dice", description="Role a dice to get a random number between 1and 6",
              aliases=["roll", "Dice"])
@@ -25,7 +30,7 @@ class Fun(Cog):
     # command for tossing a coin
     @command(name="toss", description="Flip a coin",
              aliases=["coin", "flip", "Toss"])
-    async def dice(self, ctx):
+    async def toss(self, ctx):
         await ctx.send(f"\U0001FA99 It is {choice(('Heads', 'Tails',))}")
 
     # command for generating a random fact

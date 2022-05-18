@@ -14,8 +14,8 @@ class Info(Cog):
     @command(name="userinfo", aliases=["ui"], description="Display info on a user")
     async def user_info(self, ctx, *, name: Optional[str]):
         if name is not None:
-            target = discord.utils.get(ctx.guild.members, name=name) or discord.utils.get(ctx.guild.members, nick=name)
-            print(target)
+            target = discord.utils.get(ctx.guild.members, name=name) or discord.utils.get(ctx.guild.members, nick=name)\
+                     or discord.utils.get(ctx.guild.members, id=name)
             if target is None:
                 await ctx.send("No user with that name found")
         else:
@@ -33,7 +33,8 @@ class Info(Cog):
                   ("Is a Bot?", target.bot, True),
                   ("Highest Role", target.top_role.mention, True),
                   ("Status", str(target.status).title(), True),
-                  ("Activity", f"{str(target.activity.type).split('.')[-1].title() if target.activity else 'N/A'} {target.activity.name if target.activity else ''}", True),
+                  ("Activity", f"{str(target.activity.type).split('.')[-1].title() if target.activity else 'N/A'}"
+                               f" {target.activity.name if target.activity else ''}", True),
                   ("Created on", target.created_at.strftime("%d/%m/%Y %H:%M:%S"), True),
                   ("Boosted", bool(target.premium_since), True),
                   ]
